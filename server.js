@@ -51,12 +51,12 @@ const calculatePlaybackTime = (totalSeconds, speed) => {
 function extractPlaylistId(url) {
     const urlParams = new URLSearchParams(new URL(url).search);
     return urlParams.get('list');
+}
 // Home Route
 app.get("/", (req, res) => {
     res.render("index", { result: null });
 });
 
-}
 // Playlist API Route
 app.get("/playlist", async (req, res) => {
     try {
