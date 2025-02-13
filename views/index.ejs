@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist Analyzer</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Playlist Analyzer 🎵</h1>
+        <p>Enter a YouTube Playlist URL to get total duration & details:</p>
+
+        <form action="/playlist" method="GET">
+            <input type="text" name="playlistId" placeholder="Paste Playlist URL here" required>
+            <button type="submit">Analyze Playlist</button>
+        </form>
+
+        <% if (result) { %>
+            <div class="results">
+                <h3>Results:</h3>
+                <p><strong>Total Videos:</strong> <%= result.totalVideos %></p>
+                <p><strong>Total Duration:</strong> <%= result.totalDuration %></p>
+                <p><strong>1.25x Speed:</strong> <%= result.avgSpeed %></p>
+                <p><strong>1.5x Speed:</strong> <%= result.avgSpeed150 %></p>
+                <p><strong>1.75x Speed:</strong> <%= result.avgSpeed175 %></p>
+                <p><strong>2x Speed:</strong> <%= result.doubleSpeed %></p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
