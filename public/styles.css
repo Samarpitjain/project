@@ -47,3 +47,7 @@ button:hover {
     background: #222;
     border-radius: 10px;
 }
+
+a{
+    color:azure;
+}

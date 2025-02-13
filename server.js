@@ -48,27 +48,28 @@ const formatTime = (totalSeconds) => {
 const calculatePlaybackTime = (totalSeconds, speed) => {
     return formatTime(Math.ceil(totalSeconds / speed));
 };
-
+function extractPlaylistId(url) {
+    const urlParams = new URLSearchParams(new URL(url).search);
+    return urlParams.get('list');
 // Home Route
 app.get("/", (req, res) => {
     res.render("index", { result: null });
 });
-function extractPlaylistId(url) {
-    const urlParams = new URLSearchParams(new URL(url).search);
-    return urlParams.get('list');
+
 }
 // Playlist API Route
 app.get("/playlist", async (req, res) => {
     try {
         let { playlistId } = req.query;
-        playlistId=extractPlaylistId(playlistId)
+        playlistId = extractPlaylistId(playlistId);
         if (!playlistId) {
             return res.status(400).json({ error: "Playlist ID is required" });
         }
 
         let videoIds = [];
         let nextPageToken = "";
-        
+        let videoDetails = [];
+
         // Fetch all video IDs from the playlist
         do {
             const playlistResponse = await axios.get(
@@ -83,9 +84,11 @@ app.get("/playlist", async (req, res) => {
                 }
             );
 
-            videoIds.push(...playlistResponse.data.items.map(item => item.contentDetails.videoId));
-            nextPageToken = playlistResponse.data.nextPageToken;
+            playlistResponse.data.items.forEach(item => {
+                videoIds.push(item.contentDetails.videoId);
+            });
 
+            nextPageToken = playlistResponse.data.nextPageToken;
         } while (nextPageToken);
 
         if (videoIds.length === 0) {
@@ -93,7 +96,6 @@ app.get("/playlist", async (req, res) => {
         }
 
         let totalDurationSeconds = 0;
-        let videoDetails = [];
 
         // Fetch video details
         for (let i = 0; i < videoIds.length; i += 50) {
@@ -112,6 +114,7 @@ app.get("/playlist", async (req, res) => {
                 totalDurationSeconds += duration;
 
                 videoDetails.push({
+                    videoId: video.id, // ✅ Ensure videoId is included
                     title: video.snippet.title,
                     duration: formatTime(duration),
                 });
@@ -132,6 +135,7 @@ app.get("/playlist", async (req, res) => {
                 doubleSpeed,
                 avgSpeed150,
                 avgSpeed175,
+                videos: videoDetails // ✅ Pass video details to frontend
             }
         });
 
@@ -140,6 +144,7 @@ app.get("/playlist", async (req, res) => {
         res.status(500).send("Failed to fetch playlist details");
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

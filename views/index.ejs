@@ -26,7 +26,33 @@
                 <p><strong>1.75x Speed:</strong> <%= result.avgSpeed175 %></p>
                 <p><strong>2x Speed:</strong> <%= result.doubleSpeed %></p>
             </div>
+
+            <button id="showVideos">Show All Videos</button>
+
+            <ul id="videoList" style="display: none;">
+                <% result.videos.forEach(video => { %>
+                    <li style="color:yellow;">
+                        <br>
+                        <a href="https://www.youtube.com/watch?v=<%= video.videoId %>" target="_blank">
+                            <%= video.title %> - <span style="color: yellow;"> <%= video.duration %></span>
+                        </a>
+                    </li>
+                <% }); %>
+            </ul>
         <% } %>
     </div>
+
+    <script>
+        document.getElementById("showVideos").addEventListener("click", function () {
+            const videoList = document.getElementById("videoList");
+            if (videoList.style.display === "none") {
+                videoList.style.display = "block";
+                this.innerText = "Hide Videos";
+            } else {
+                videoList.style.display = "none";
+                this.innerText = "Show All Videos";
+            }
+        });
+    </script>
 </body>
 </html>
